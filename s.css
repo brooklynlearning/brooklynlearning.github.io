@@ -66,9 +66,13 @@
 .appear {
     opacity: 1;
 }
-.incorrect {
-    background: tomato,
-    color: snow,
+.singleton-correct {
+  background: #FFFF99;
+  color: black;
+}
+.singleton-incorrect {
+    background: tomato;
+    color: snow;
 }
 
 input {
@@ -169,22 +173,18 @@ input {
     border: 0;
 }
 .singleton-input {
-  font: normal 0.7em KaTeX_Main,Times New Roman,serif;
+  font: normal 0.4em KaTeX_Main,Times New Roman,serif;
   margin: 0 auto;
   padding: 1vw;
   display: block;
-
   text-align: center;
   line-height: 160px;
-  height: 80px;
-  max-width: 250px;
-
-  /*caret-color: red; */
-  /*caret-color: #FFFF99; */
-  background: #FFFF99;
+  height: 100px;
+  width: fit-content;
+  max-width: 300px;
   border-radius: 15px;
   font-family: georgia;
-  font-size: 10vw;
+  font-size: 5vw;
   transition: all .75s;
   position: relative;
 }
