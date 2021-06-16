@@ -1,3 +1,64 @@
+
+function zoobat(e) {
+
+    console.log('hiiii')
+    const value = removeSpaces(e.target.value.trim())
+    const answer = this.singletonquestion.answer
+
+    if (e.key == ' ') {
+        console.log('skipping spaces')
+        //e.preventDefault()
+        //return
+        return
+    }
+    if (value.length < answer.length) {
+        console.log('returning bc not long enuf')
+        return
+    }
+    else if (value == answer) {
+        this.correctCount += 1
+        this.hotstreak += 1
+        console.log(this.isCorrect, this.hotstreak, 'toshow')
+        this.$toggle('isCorrect', this.appearDuration + 50, () => {
+            this.showHint = false
+            this.timerID2 = setTimeout(() => {
+                e.srcElement.value = ''
+                this.myKey += 1
+            }, 100)
+            
+        })
+    }
+    else {
+        this.hotstreak = 0
+        this.errorCount += 1
+        if (this.errorCount == 1) {
+            this.showHint = true
+        }
+        if (this.errorCount > 2) {
+            this.errorCount = 0
+            this.$toggle('disabled', 2000, () => {
+                e.srcElement.value = this.singletonquestion.answer
+                setTimeout(() => {
+                e.srcElement.value = ''
+                e.srcElement.focus()
+                updateStorage(
+                    'incorrect', 
+                    'this.singletonquestion.question', 
+                )
+                this.myKey += 1
+                }, 2000)
+            })
+        }
+        else {
+            clearTimeout(this.timerID2)
+            this.timerID2 = setTimeout(() => {
+                e.srcElement.value = ''
+            }, 1500)
+        }
+    }
+}
+
+
 const [exponentquestions, factorquestions] = [
 [ { type: 'Find x.',
     answer: '3',
@@ -43,21 +104,20 @@ const [exponentquestions, factorquestions] = [
     answer: '2',
     question: '(a + b) \\times (a - b) = a^{2} - b^{x}' },
   { type: 'Simplify.',
-    answer: '2(2x+4)',
+    answer: '4(x+2)',
     question: '4x + 8 \\rightarrow' },
   { type: 'Simplify.',
-    answer: 'yx(y - x - 1)',
+    answer: 'yx(x-y-1)',
     question: 'yx^{2} - yyx - yx \\rightarrow' },
   { type: 'Find x.',
     answer: 'a',
-    question: '\\frac{ax - ay}{(x - y) = }' },
+    question: '\\frac{ax - ay}{(x - y)} =' },
   { type: 'Solve.',
     answer: '2ab',
     question: '(xa + xb) \\times (xa + xb) = x^{2} + \\mathord{?} + b^{2}' },
   { type: 'Find x.',
     answer: 'x+4',
     question: '\\frac{(x + 4)(x + 5)(x + 6)}{(x^{2} + 11x + 30)} = ' } ]
-
 ]
 
 function animatorAction() {
@@ -5377,7 +5437,7 @@ function imagegetter(text) {
 }
 function pathfix(s) {
     let extension = '.jpg'
-    return './' + addSuffix(s, extension)
+    return './CATS/' + addSuffix(s, extension)
 }
 
 
@@ -5673,12 +5733,12 @@ const CelebrationComponent = {
         styleobj() {
           return {
             fontWeight: Number(this.streak) * 50 + 700 + 'px',
-            fontSize: Number(this.streak) * 2 + 64 + 'px',
+            fontSize: Number(this.streak) * 12 + 122 + 'px',
+            //fsize
           }
         },
         computedStyleObject() {
             const positionObj = determinePosition(this.position || 'bottom-right')
-
             const obj = {
                 'position': 'absolute',
                 opacity: 0,
@@ -5818,7 +5878,7 @@ const StartComponent = {
         }
     },
     mounted() {
-        console.log(this.$store.state.studentID)
+        console.log('hi from moutned')
     },
 }
 
@@ -5852,23 +5912,22 @@ const EndComponent = {
     },
     mounted() {
         console.log('the end component has been mounted')
-        console.log(this.scores, 'scores')
-        let val = getStorage('incorrect')
-        console.log(val)
-        jsonbin2(val)
+        console.log(this.$store.state.studentID)
+        console.log(this.$store.state.questions)
+        const questions = this.$store.state.questions
+        const id = this.$store.state.studentID
+        postbin({questions, id})
     },
     watch: {
-        scores(val) {
-            console.log(val, 'scores')
-            console.log(this.$store.state.studentID)
-            //fstorager
-            storager('scored', () => {
-                console.log(val)
-                val = getStorage('incorrect')
-                console.log(val)
-                jsonbin2(val)
-            })
-        }
+        //scores(val) {
+            //console.log(val, 'scores')
+            //storager('scored', () => {
+                //console.log(val)
+                //val = getStorage('incorrect')
+                //console.log(val)
+                //jsonbin2(val)
+            //})
+        //}
     },
 }
 
@@ -6190,6 +6249,9 @@ const SingletonComponent = {
         //this.$refs.input.focus()
     },
     watch: {
+        disabled() {
+            console.log('disabled', this.disabled)
+        },
         myKey(val) {
             console.log('watchier')
             const result = this.$increment('singletonquestion')
@@ -6198,6 +6260,7 @@ const SingletonComponent = {
                 this.$emit('finished')
             }
             else {
+                console.log('incrementing question')
                 this.questionIndex += 1
             }
         }
@@ -6219,6 +6282,7 @@ const SingletonComponent = {
     },
     props: ['question'],
     methods: {
+       zoobat,
        startTimer() {
             this.timerID = setTimeout(() => {
                this.provideAnswer() 
@@ -6276,71 +6340,80 @@ const SingletonComponent = {
         const input = h('input', {
             class: {
                 'singleton-input': true,
-                'incorrect': this.disabled,
+                'singleton-incorrect': this.disabled,
+                'singleton-correct': !this.disabled,
             },
             domProps: {
                 autofocus: true,
+                spellcheck: false,
                 type: 'text',
                 disabled: this.disabled,
             },
             ref: 'input',
             on: {
-               //click: (e) => {
-                 //console.log(this, self, 'hi', e.pageX)
-               //},
-               input: debounce((e) => {
-                    e.preventDefault()
+               input: (e) => {
+                    clearTimeout(this.inputTimerID)
+                    this.inputTimerID = setTimeout(() => {
+//zoobatstart
 
-                    const value = e.target.value.trim()
-                    const answer = self.singletonquestion.answer
-                    const tanswer = removeSpaces(self.singletonquestion.answer)
+    console.log('hiiii')
+    const value = removeSpaces(e.target.value.trim())
+    const answer = this.singletonquestion.answer
 
-                    if (answer.length > 2 && value.length < answer.trim().length){
-                        console.log('returning bc not long enuf')
-                        return
-                    }
-                    else if (value == answer || value == tanswer) {
-                        this.correctCount += 1
-                        this.hotstreak += 1
-                        console.log(this.isCorrect, this.hotstreak, 'toshow')
-                        this.$toggle('isCorrect', this.appearDuration + 50, () => {
-                            this.showHint = false
-                            this.timerID2 = setTimeout(() => {
-                                e.srcElement.value = ''
-                                this.myKey += 1
-                            }, 100)
-                            
-                        })
-                    }
-                    else {
-                        this.hotstreak = 0
-                        this.errorCount += 1
-                        if (this.errorCount == 1) {
-                            this.showHint = true
-                        }
-                        if (this.errorCount > 3) {
-                            this.errorCount = 0
-                            this.$toggle('disabled', 2000, () => {
-                                e.srcElement.value = this.singletonquestion.answer
-                                setTimeout(() => {
-                                e.srcElement.value = ''
-                                e.srcElement.focus()
-                                updateStorage(
-                                    'incorrect', 
-                                    'this.singletonquestion.question', 
-                                )
-                                this.myKey += 1
-                                }, 2000)
-                            })
-                        }
-                        else {
-                            clearTimeout(this.timerID2)
-                            this.timerID2 = setTimeout(() => {
-                                e.srcElement.value = ''
-                            }, 1500)
-                        }
-                    }
-               })
+    if (e.key == ' ') {
+        console.log('skipping spaces')
+        //e.preventDefault()
+        //return
+        return
+    }
+    if (value.length < answer.length) {
+        console.log('returning bc not long enuf')
+        return
+    }
+    else if (value == answer) {
+        this.correctCount += 1
+        this.hotstreak += 1
+        console.log(this.isCorrect, this.hotstreak, 'toshow')
+        this.$toggle('isCorrect', this.appearDuration + 50, () => {
+            this.showHint = false
+            this.timerID2 = setTimeout(() => {
+                e.srcElement.value = ''
+                this.myKey += 1
+            }, 100)
+            
+        })
+    }
+    else {
+        this.hotstreak = 0
+        this.errorCount += 1
+        if (this.errorCount == 1) {
+            this.showHint = true
+        }
+        if (this.errorCount > 2) {
+            this.$store.commit('addQuestion', this.singletonquestion.question)
+            this.errorCount = 0
+
+            e.srcElement.value = this.singletonquestion.answer
+            e.srcElement.focus()
+            this.$toggle('disabled', 5000, () => {
+                this.myKey += 1
+            })
+        }
+        else {
+            clearTimeout(this.timerID2)
+            this.timerID2 = setTimeout(() => {
+                e.srcElement.value = ''
+            }, 1500)
+        }
+    }
+
+
+//zoobatend
+
+
+
+                    }, 100)
+               }
             },
         })
 
@@ -6427,7 +6500,6 @@ const SingletonComponent = {
         this.errorCount = 0
         this.$increment('singletonquestion', this.question.questions)
     },
-
 }
 const QuizComponent = {
     computed: {
@@ -6529,7 +6601,6 @@ const VueData = {
     //leaveClassName: 'fade-leave-active',
     computedProps: null,
     currentComponent: 'EndComponent',
-    currentComponent: 'QuizComponent',
     currentComponent: 'StartComponent',
     showCodeMirror: false,
 }
@@ -7038,11 +7109,15 @@ function CreateVue() {
     const store = new Vuex.Store({
       state: {
         studentID: null,
+        questions: [],
       },
       mutations: {
         setStudentID (state, payload) {
           state.studentID = payload 
-        }
+        },
+        addQuestion (state, payload) {
+          state.questions.push(payload)
+        },
       }
     })
 
@@ -7902,7 +7977,7 @@ function randomhtml() {
     return selt('div', {class: 'flexcenter'},
         selt('p', 'random-class-' + rng(), randomPick(compliments)),
         selt('img', {
-            src: './CATS/' + randomPick(catpics),
+            src: './' + randomPick(catpics),
             width: '250px',
             height: '250px',
             style: {
@@ -7911,6 +7986,8 @@ function randomhtml() {
         })
     )
 }
+
+
 
 function rng(min = 1, max = 10) {
     return Math.floor(Math.random() * (max - min + 1)) + min
