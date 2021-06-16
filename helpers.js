@@ -5377,7 +5377,7 @@ function imagegetter(text) {
 }
 function pathfix(s) {
     let extension = '.jpg'
-    return './CATS/' + addSuffix(s, extension)
+    return './' + addSuffix(s, extension)
 }
 
 
