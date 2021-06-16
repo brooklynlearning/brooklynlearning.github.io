@@ -30,24 +30,21 @@ function zoobat(e) {
     }
     else {
         this.hotstreak = 0
+
         this.errorCount += 1
         if (this.errorCount == 1) {
             this.showHint = true
         }
+
         if (this.errorCount > 2) {
             this.errorCount = 0
-            this.$toggle('disabled', 2000, () => {
+            this.disabled = true
+            setTimeout(() => {
                 e.srcElement.value = this.singletonquestion.answer
                 setTimeout(() => {
-                e.srcElement.value = ''
-                e.srcElement.focus()
-                updateStorage(
-                    'incorrect', 
-                    'this.singletonquestion.question', 
-                )
-                this.myKey += 1
-                }, 2000)
-            })
+                    this.myKey += 1
+                }, 1000)
+            }, 2000)
         }
         else {
             clearTimeout(this.timerID2)
@@ -6253,7 +6250,7 @@ const SingletonComponent = {
             console.log('disabled', this.disabled)
         },
         myKey(val) {
-            console.log('watchier')
+            this.disabled = false
             const result = this.$increment('singletonquestion')
             if (!result) {
                 console.log('we done boyyyyy!')
@@ -6263,6 +6260,9 @@ const SingletonComponent = {
                 console.log('incrementing question')
                 this.questionIndex += 1
             }
+            this.$refs.input.value = ''
+            this.$refs.input.focus()
+            console.log(this.$refs.input)
         }
     },
     data() {
@@ -6393,11 +6393,14 @@ const SingletonComponent = {
             this.$store.commit('addQuestion', this.singletonquestion.question)
             this.errorCount = 0
 
-            e.srcElement.value = this.singletonquestion.answer
-            e.srcElement.focus()
-            this.$toggle('disabled', 5000, () => {
-                this.myKey += 1
-            })
+            this.disabled = true
+            setTimeout(() => {
+                e.srcElement.value = this.singletonquestion.answer
+                setTimeout(() => {
+                    this.myKey += 1
+                    e.srcElement.focus()
+                }, 5000)
+            }, 2000)
         }
         else {
             clearTimeout(this.timerID2)
