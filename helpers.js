@@ -155,46 +155,7 @@ const HintComponent = {
     },
 
 }
-function tachdefcss() {
-    let s = read('questions.txt')
-    console.log(s)
-    let css = findtwice(/<style>([\w\W]+?)<\/style>/, /([\.:][\w-]+) *{([\w\W]+?)}/g, s)
-    .map((item) => {
-        return [item[0].replace(/^\./, ''), item[1].replace(/(?<!:)\s+/g, '')]
-    })
-    write('defaultcss.json', toDictionary(css))
-}
 
-function findtwice(r1, r2, s) {
-    let initial = search(r1, s)
-    return findall(r2, s)
-}
-function tach(s) {
-    const lib = read('tach.json')
-    const defaultcss = read('defaultcss.json')
-    let count = 0
-    const product = findall(/class=[\'\"]([\w\W]*?)[\'\"]/g, s).reduce((acc, item) => {
-        let name = 'undefined'
-        const matches = item.trim().split(/\s+/g).map((item) => {
-            let match = lib[item] || defaultcss[item]
-            if (!match && !test(/\d/, item)) name = item 
-            return match
-        })
-        return acc += name + ' {\n' + indent(matches.filter(x => x).join('\n')) + '\n}' + '\n\n'
-    }, '')
-    console.log(product)
-}
-function readtach() {
-    const items = findall(/^ *\.(.*?) { (.*?) }$/gm, read('tach.css'))
-    // the current iteration only has the present. 
-    write('tach.json', toDictionary(items))
-}
-
-
-//tl( splitkatex('find x. also $x^2 + 2$ is cool' ))
-function toKatexString(s) {
-    return s
-}
 function determinePosition(s, fallback) {
     const store = s.split('-').reduce((acc, item, i) => {
         acc[item] = 100 + 'px'
@@ -8075,3 +8036,6 @@ function storager(key, fn) {
     }
 }
 
+
+
+console.log("2021-06-16 11:54:21.906767")
