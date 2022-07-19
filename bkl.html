@@ -1,0 +1,164 @@
+
+<!doctype html>
+<html>
+
+<head>
+<! -- KATEX -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.13.13/dist/katex.min.css" integrity="sha384-RZU/ijkSsFbcmivfdRBQDtwuwVqK7GMOw6IMvKyeWL2K5UAlyp6WonmB8m7Jd0Hn" crossorigin="anonymous"><script src="https://cdn.jsdelivr.net/npm/katex@0.13.13/dist/katex.min.js" integrity="sha384-pK1WpvzWVBQiP0/GjnvRxV4mOb0oxFuyRxJlk6vVw146n3egcN5C925NCP7a7BY8" crossorigin="anonymous"></script>
+
+
+<! -- QUILL -->
+<!---------------------------------------->
+<link href="https://cdn.quilljs.com/1.3.6/quill.bubble.css" rel="stylesheet"/>
+<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet"/>
+<script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+<!---------------------------------------->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.3/socket.io.js" integrity="sha512-PU5S6BA03fRv1Q5fpwXjg5nlRrgdoguZ74urFInkbABMCENyx5oP3hrDzYMMPh3qdLdknIvrGj3yqZ4JuU7Nag==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+</head>
+
+<body><div id="app"></div></body>
+
+<script>
+function request(data) {
+    url = 'https://script.google.com/macros/s/AKfycbyEGqb00P9YsO9r-Vm524Pi5UNL9zmPX9dxFp0FwmI6G6RusuGUBau9FyqrFyqW9gIE/exec'
+    const options = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+    }
+
+    return fetch(url, options).then(x => {
+        try {
+            return x.json()
+        }
+        catch {
+            return x.text()
+        }
+    })
+}
+
+const exams = [
+    {name: 'SAT Grammar Test 1', href: '', answerkey: 'aaaaaa'.split('')},
+    {name: 'SAT Grammar Test 2', href: '', answerkey: 'aaaaaa'.split('')},
+]
+
+const emithook = 'ee'
+const socket = io()
+
+Vue.prototype.$pagechange = function(page, props) {
+    this.$emit('pagechange', [page, props])
+}
+
+
+//new Vue({
+ //template: '<div>hi</div>',
+//}).$mount('#app')
+
+const main = {
+    mounted() {
+    },
+    template: `
+
+        <div>
+            <transition name="fade" mode="out-in">
+                <component :is="currentComponent"
+                    v-bind="props" @pagechange="pagechangehandler">
+                </component>
+            </transition>
+        </div>
+    `,
+    data() {
+        return {
+            currentComponent: 'intro',
+            props: {}
+        }
+    },
+    methods: {
+        pagechangehandler(e) {
+            [this.currentComponent, this.props] = e
+        },
+    },
+}
+function request(data) {
+    url = 'https://script.google.com/macros/s/AKfycbyEGqb00P9YsO9r-Vm524Pi5UNL9zmPX9dxFp0FwmI6G6RusuGUBau9FyqrFyqW9gIE/exec'
+    const options = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+    }
+
+    return fetch(url, options).then(x => {
+        try {
+            return x.json().then(el => {
+                try {
+                    console.log(JSON.parse(el))
+                    return JSON.parse(el)
+                }
+                catch {
+                    console.log(el)
+                    return el
+                }
+            })
+        }
+        catch {
+            console.log(x.text(), 'as text')
+            return x.text()
+        }
+    })
+}
+
+Vue.component('intro', {
+    props: [],
+    mounted() {
+        //fon
+        socket.on('private-message', (sender, message) => {
+            this.messages.push({sender, message, date: datestamp()})
+            this.pingNotification()
+        })
+        socket.on(emithook, (f) => {
+            console.log('respppp', f)
+            try {
+                this.exams.push({'name': f.toString()})
+            }
+            catch(e) {
+                this.exams.push({'name': e.toString()})
+            }
+        })
+    },
+    template: `
+        <div>
+            <div class="abc" v-for="exam, i in exams">
+                <button class="abc" 
+                    @click="foo(i)">{{exam.name}}
+                </button>
+            </div>
+        </div>
+    `,
+    data() {
+        return {
+           exams, 
+        }
+    },
+    methods: {
+         async foo(i) {
+             let x = await request({key: 'get=answers'})
+             console.log(x)
+             return 
+
+            socket.emit(emithook, i)
+        }
+    },
+})
+
+
+
+
+new Vue(main).$mount('#app')
+
+</script>
+
+
+</html>
