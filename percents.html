@@ -28,14 +28,14 @@
             },
             template: `
                 <div class="page">
-                    <p style = "margin-bottom: 100px; font-weight: 600;font-size: 1.3rem;">Wednesday July 20</p>
+                    <p style = "margin-bottom: 100px; font-weight: 600;font-size: 1.6rem; color: blue;">Wednesday July 20</p>
                     <section v-for = "s in sections" class="sections">
                         <section class="section">
                             <div class="title">{{s.title}}</div>
 
                             <div v-if = "s.youtube" class="youtube">
                             <p class = "label">Help Reference:  </p>
-                            <a class = "href" :href = "s.youtube">  youtube</a>
+                            <a class = "href" target = "_blank" :href = "s.youtube">  youtube</a>
                             </div>
                             <ul v-if = "s.notes" class="notes">
                                 <li v-for = "note in s.notes" class="note">{{note}}</li>
@@ -45,7 +45,7 @@
                                     <div class="question">{{q.question}}</div>
                                     <div class="answer">
                                     
-                                    <button class = "bold btn clicker-parent"> Show Answer</button>
+                                    <button tabindex ="1" class = "bold btn clicker-parent"> Show Answer</button>
                                     <p class = "clicker-child">{{q.answer}}</p>
                                     </div>
                                     <div v-if = "q.explanation" class="explanation">
