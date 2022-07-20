@@ -44,13 +44,8 @@
                                 <div v-for = "q in s.questions" class="question-container">
                                     <div class="question">{{q.question}}</div>
                                     <div class="answer">
-                                    
-                                    <button tabindex ="1" class = "bold btn clicker-parent"> Show Answer</button>
-                                    <p class = "clicker-child">{{q.answer}}</p>
-                                    </div>
-                                    <div v-if = "q.explanation" class="explanation">
-                                    <button class = "bold btn clicker-parent"> Show Explanation</button>
-                                    <p class = "clicker-child">{{q.explanation}}</p>
+                                        <button @click = "q.show = !q.show" class = "bold btn"> Show Answer</button>
+                                        <p v-show = "q.show" @click = "q.show = false" class = "clicker-child">{{q.answer}}</p>
                                     </div>
                                 </div>
                             </section>
