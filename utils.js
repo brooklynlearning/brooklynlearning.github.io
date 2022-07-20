@@ -10162,12 +10162,13 @@ function incrementf(template) {
     let count = 0
     return function lambda() {
         if (!template) return count++
-        return template.replace(/\$1|[ija1]/i, (x) => {
+        return template.replace(/1/i, (x) => {
             count++
             switch (x) {
                 case 'A': return capitalize(n2char(count))
                 case 'i': return count
                 case '$1': return count
+                case '1': return count
             }
         })
     }
