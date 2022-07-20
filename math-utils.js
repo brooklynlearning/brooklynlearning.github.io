@@ -208,12 +208,6 @@ function getFactors(number) {
 function countFactors(n) {
     return getFactors(n).length
 }
-function addMathComma(x) {
-    // node-only
-    const regex = /\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g
-    return x.toString().replace(regex, ',')
-    //const regex = /\B(?=(\d{3})+(?!\d))/g
-}
 
 function gcd(a, b, ...args) {
     if (args.length > 0) {
@@ -1203,87 +1197,7 @@ function fraction(a, b) {
 }
 
 function fm1(s) {
-    if (!s)
-        s = `
-        aem * aen=ae[mpn]
-        (a^m)^n = ae[mn]
-        (ab)en = aenben
-        a/ben = aem/ben
-        (ab)en = aen * ben
-        ae[-n] = 1/aen
-        ae[fracmn]=nrtaem
-
-        xe-1 = 3 and ye-1 = 9. Find (x+y)e-1/2
-        (2^{x+1})^{-4} = 1/64. Find x.
-    `
-    //let ssc = `
-    //16^1/2 * 256^3/4 =
-    //6rtxe4 * 4rtxe6 =
-    //If xe-1/2 = 1/8, what is the value of xe2/3?
-    //If 10ek = 64, what is the value of 10^{\\frac{k}{2} + 1}?
-    //(2rs)e-1 = 3se-2. Find r/s.
-    //`
-    //s = ssc
-
-    // 06-23-2022
-
-    s = s.replace(/f(\w+)\/(\w+)/g, (_, a, b) => {
-        return `\\frac{${a}}{${b}}`
-    })
-
-    s = s.replace(/(\w+)rt(\w+)/g, (_, a, b) => {
-        return `\\sqrt[${a}]{${b}}`
-    })
-    s = s.replace(
-        /sq(?:rt)?\w+|arr|\bpi\b|p|[lg]te?|\*/g,
-        (x) => {
-            switch (x) {
-                case 'pi':
-                    return '\\pi'
-                case 'arr':
-                    return '\\rightarrow'
-                case 'p':
-                    return '+'
-                case 'lte':
-                    return '\\leq'
-                case 'lt':
-                    return '\\lt'
-                case 'gt':
-                    return '\\gt'
-                case 'gte':
-                    return '\\geq'
-                case '*':
-                    //return '\\cdot'
-                    return '\\cdot'
-            }
-            if (/sq/.test(x)) {
-                return `\\sqrt{${x.replace(/sq(?:rt)?/, '')}}`
-            }
-        }
-    )
-
-    s = s.replace(
-        /(?<!\\)e(-?(?:[a-zA-Z]|[\d\/]+)|\[.*?\])/g,
-        (_, x) => {
-            if (x.startsWith('['))
-                return '^' + wrap(x.slice(1, -1), '{}')
-            return '^' + wrap(x, '{}')
-        }
-    )
-    s = s.replace(/frac(\w+)/g, (_, x) => {
-        let [a, b] = x.split('')
-        return `\\frac{${a}}{${b}}`
-    })
-    s = s.replace(/(\w+)\/(\w+)/g, (_, a, b) => {
-        return `\\frac{${a}}{${b}}`
-    })
-
-    let m = '\\medspace'
-    s = s.replace(/ = *$/gm, [m, '=', m, '?', m].join(' '))
-
     return s
-    //return smartDedent(s).split('\n')
-    /* you can parse it all at once or parse it line by line. For the creation of the docs, it was all at once. */
 }
 
 function toLatex(s, styles) {
