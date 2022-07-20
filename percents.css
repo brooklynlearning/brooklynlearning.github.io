@@ -1,0 +1,46 @@
+/* -------------------- page */
+
+.page {
+    padding: 50px;
+}
+.sections {
+    margin-bottom: 50px;
+    border-bottom: 5px solid #2b6cb0 /* blue7 */;
+    padding-bottom: 50px;
+}
+.title {
+    font-weight: 600;
+    font-size: 1.4rem;
+    left: 1%;
+    top: .3%;
+    border-bottom: 1px solid currentColor;
+    margin-bottom: 25px;
+    display: inline-block;
+}
+.youtube {
+    display: flex;
+    margin-bottom: 20px;
+}
+.label {
+    font-weight: 700;
+    font-size: .9rem;
+}
+.question-container {
+    margin-bottom: 30px;
+}
+.answer {
+    height: 60px;
+    margin-top: 10px;
+}
+.clicker-child {
+    background: #ebf8ff /* blue1 */;
+    padding: 10px;
+    font-size: 0.9rem;
+    border-radius: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+.notes {
+    margin-left: 20px;
+    margin-bottom: 20px;
+}
