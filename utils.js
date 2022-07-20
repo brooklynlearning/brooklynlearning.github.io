@@ -9666,7 +9666,6 @@ It represents the faster worker because 3x>1x. It represents the fraction of the
 okay cool
 `
 
-//let r = /(?<!\S)[a-zA-Z]
 //function p(s) {
 //return s + "HI"
 //}
