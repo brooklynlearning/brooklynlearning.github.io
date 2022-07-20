@@ -1,1 +1,66 @@
-Percents
+<!DOCTYPE html><html lang="en">
+    <head>
+        <script charset="utf8" src="nerdamer.js"></script>
+        <link rel="stylesheet" href="normalize.css"/>
+        <link rel="stylesheet" href="percents.css"/>
+        <script charset="utf8" src="vue.js"></script>
+        <script charset="utf8" src="utils.js"></script>
+        <script charset="utf8" src="browser.js"></script>
+        <script charset="utf8" src="nerdamer-utils.js"></script>
+        <script charset="utf8" src="math-utils.js"></script>
+        <script charset="utf8" src="css-utils.js"></script>
+        <style>
+        </style>
+    </head>
+
+    <body>
+        <div id="app"></div>
+    </body>
+
+    <script>
+    /* the name should always be capitalized */
+        var Pork = {
+            name: 'Pork',
+            data() {
+                return {
+                    sections: mathfoo(),
+                }
+            },
+            template: `
+                <div class="page">
+                    <section v-for = "s in sections" class="sections">
+                        <section class="section">
+                            <div class="title">{{s.title}}</div>
+
+                            <div v-if = "s.youtube" class="youtube">
+                            <p class = "label">Help Reference:  </p>
+                            <a class = "href" :href = "s.youtube">  youtube</a>
+                            </div>
+                            <ul v-if = "s.notes" class="notes">
+                                <li v-for = "note in s.notes" class="note">{{note}}</li>
+                            </ul>
+                            <section class="questions">
+                                <div v-for = "q in s.questions" class="question-container">
+                                    <div class="question">{{q.question}}</div>
+                                    <div class="answer">
+                                    
+                                    <button class = "bold btn clicker-parent"> Show Answer</button>
+                                    <p class = "clicker-child">{{q.answer}}</p>
+                                    </div>
+                                    <div v-if = "q.explanation" class="explanation">
+                                    <button class = "bold btn clicker-parent"> Show Explanation</button>
+                                    <p class = "clicker-child">{{q.explanation}}</p>
+                                    </div>
+                                </div>
+                            </section>
+                        </section>
+                    </section>
+                </div>
+            `,
+        }
+        
+        new Vue(Pork).$mount('#app')
+        // legoLoader()
+        /* include the name over on the other side. */
+    </script>
+</html>
