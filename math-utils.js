@@ -2927,11 +2927,12 @@ function foo1(ref, levels, amount = 5) {
                 let explanation = ref.answer ? 
                         evalCall(ref.answer, ...args) : null
                     
-                let payload = {
-                    question, explanation, answer: value
+                let id = nextId()
+                let questionPayload = {
+                    id, question, explanation, answer: value,
+                    show: false,
                 }
-                //console.log(payload)
-                store.push(payload)
+                store.push(questionPayload)
             }
         }
     }
@@ -2967,4 +2968,5 @@ function numbergen({
     }
     return n
 }
-console.log(mathfoo())
+let nextId = incrementf('id-1')
+//console.log(mathfoo())
